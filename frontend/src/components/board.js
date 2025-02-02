@@ -1,19 +1,32 @@
-import {Mark_type, Marker} from "./utils.js";
+import React, { useState } from "react";
+import "../style.css";
+const Board = ({ size }) => {
+    // State to track the board
+    const [board, setBoard] = useState(Array(size * size).fill(null));
+    const [currentPlayer, setCurrentPlayer] = useState("X");
 
-class Board{
-    constructor(dimension, player1, player2){
-        this.dimension = dimension;
-        this.player1 = player1;
-        this.player2 = player2;
-    }
-}
+    // Handle cell click
+    const handleClick = (index) => {
+        if (board[index] !== null) return; // Prevent overwriting
+        const newBoard = [...board];
+        newBoard[index] = currentPlayer;
+        setBoard(newBoard);
+        setCurrentPlayer(currentPlayer === "X" ? "O" : "X"); // Toggle player
+    };
 
-class Square{
-    constructor(grid_pos, mark = null){
-        this.grid_pos = grid_pos;
-        this.mark = new Marker(mark);
-    }
-    toString(){
-        console.log(`Position: ${this.grid_pos}, Marker: ${this.mark}`)
-    }
-}
+    return (
+        <div className="board">
+            {board.map((cell, index) => (
+                <div 
+                    key={index} 
+                    className={`cell ${cell ? "active" : ""}`} 
+                    onClick={() => handleClick(index)}
+                >
+                    {cell}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default Board;
