@@ -6,10 +6,11 @@ function Navbar() {
         <nav className="navbar">
             <ul>
                 <li><Link to="/">Start</Link></li>
+                <li><Link to="/Login">Login</Link></li>
                 <li><Link to="/Play">Play</Link></li>    
                 <li><Link to="/Ranks">Ranks</Link></li>   
                 <li><Link to="/Leaderboard">Leaderboard</Link></li>
-                <li><Link to="/Rules">Rules</Link></li>   
+                <li><Link to="/Rules">Rules</Link></li>     
             </ul>
         </nav>
     );

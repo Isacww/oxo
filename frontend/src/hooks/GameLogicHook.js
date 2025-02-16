@@ -1,14 +1,21 @@
 import { useState } from "react";
+import { useUser } from "../context/UserContext"; // ✅ Import here
 
-const DEFAULT_FULL_SIZE = 40; // You can now set this dynamically when initializing the hook
-const INITIAL_ACTIVE_SIZE = 9; 
+const DEFAULT_FULL_SIZE = 40;
+const INITIAL_ACTIVE_SIZE = 9;
 const EXPANSION_STEP = 2;
 
 const useGameLogic = (fullSize = DEFAULT_FULL_SIZE) => {
+    if (!Number.isInteger(fullSize) || fullSize <= 0) {
+        throw new Error("Invalid fullSize value. Must be a positive integer.");
+    }
+
+    const { user, setRank } = useUser(); // ✅ Use inside function
+
     const [board, setBoard] = useState(Array(fullSize * fullSize).fill(null));
     const [currentPlayer, setCurrentPlayer] = useState("X");
     const [winner, setWinner] = useState(null);
-    
+
     const [activeTopLeft, setActiveTopLeft] = useState({
         row: Math.floor((fullSize - INITIAL_ACTIVE_SIZE) / 2),
         col: Math.floor((fullSize - INITIAL_ACTIVE_SIZE) / 2),
@@ -18,30 +25,30 @@ const useGameLogic = (fullSize = DEFAULT_FULL_SIZE) => {
 
     const handleClick = (index) => {
         if (winner) return; // Stop clicks after win
-    
+
         // Convert active board index to row/col
         const row = Math.floor(index / activeSize);
         const col = index % activeSize;
-    
+
         // Map to full board space
         const fullRow = activeTopLeft.row + row;
         const fullCol = activeTopLeft.col + col;
         const fullIndex = fullRow * fullSize + fullCol;
-    
+
         if (board[fullIndex] !== null) return; // Prevent overwriting
-    
-        // Create a new updated board first
+
+        // Update board state
         const newBoard = [...board];
         newBoard[fullIndex] = currentPlayer;
-    
-        // Check for a winner BEFORE setting state
+        setBoard(newBoard);
+
+        // Check for a winner
         if (checkWinner(newBoard, currentPlayer)) {
             setWinner(currentPlayer);
+            updateRank();
+            return;
         }
-    
-        // Update state
-        setBoard(newBoard);
-    
+
         // Expand board if needed
         if (
             row < EXPANSION_STEP || col < EXPANSION_STEP ||
@@ -49,14 +56,10 @@ const useGameLogic = (fullSize = DEFAULT_FULL_SIZE) => {
         ) {
             expandActiveBoard();
         }
-    
-        // Only update the player if there's no winner
-        if (!checkWinner(newBoard, currentPlayer)) {
-            setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
-        }
+
+        // Change turn only if there's no winner
+        setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     };
-    
-    
 
     const expandActiveBoard = () => {
         if (activeSize + EXPANSION_STEP * 2 <= fullSize) {
@@ -70,7 +73,6 @@ const useGameLogic = (fullSize = DEFAULT_FULL_SIZE) => {
 
     const checkWinner = (board, currentPlayer) => {
         const grid = [];
-
         for (let row = 0; row < fullSize; row++) {
             grid.push(board.slice(row * fullSize, (row + 1) * fullSize));
         }
@@ -107,6 +109,11 @@ const useGameLogic = (fullSize = DEFAULT_FULL_SIZE) => {
             }
         }
         return false;
+    };
+
+    const updateRank = () => {
+        if (!setRank) return;
+        setRank((prevRank) => prevRank + 10); // ✅ Increase rank by 10 (or any logic)
     };
 
     const resetGame = () => {

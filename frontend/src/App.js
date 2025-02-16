@@ -7,20 +7,25 @@ import Ranks from "./components/navigation/Ranks";
 import Leaderboard from "./components/navigation/Leaderboard";
 import Rules from "./components/navigation/Rules";
 import Header from "./components/navigation/Header";
+import Login from "./components/navigation/Login";
 import "./style.css";
+import { UserProvider } from "./context/UserContext";
 function App() {
     return (
-        <Router>
-            <Navbar />
-            <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/Play" element={<Play />} />
-                <Route path="/Ranks" element={<Ranks />} />
-                <Route path="/Rules" element={<Rules />} />
-                <Route path="/Leaderboard" element={<Leaderboard />} />
-            </Routes>
-        </Router>
+        <UserProvider>
+            <Router>
+                <Navbar />
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/Login" element={<Login/>}/>
+                    <Route path="/Play" element={<Play />} />
+                    <Route path="/Ranks" element={<Ranks />} />
+                    <Route path="/Rules" element={<Rules />} />
+                    <Route path="/Leaderboard" element={<Leaderboard />} />
+                </Routes>
+            </Router>
+        </UserProvider>
     );
 }
 
