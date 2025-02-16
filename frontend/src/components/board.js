@@ -1,30 +1,50 @@
-import React, { useState } from "react";
+import React from "react";
 import "../style.css";
-const Board = ({ size }) => {
-    // State to track the board
-    const [board, setBoard] = useState(Array(size * size).fill(null));
-    const [currentPlayer, setCurrentPlayer] = useState("X");
+import useGameLogic from "../hooks/GameLogicHook";
 
-    // Handle cell click
-    const handleClick = (index) => {
-        if (board[index] !== null) return; // Prevent overwriting
-        const newBoard = [...board];
-        newBoard[index] = currentPlayer;
-        setBoard(newBoard);
-        setCurrentPlayer(currentPlayer === "X" ? "O" : "X"); // Toggle player
-    };
+const Board = () => {
+    const { board, fullSize, currentPlayer, winner, activeSize, activeTopLeft, handleClick, resetGame } = useGameLogic();
 
     return (
-        <div className="board">
-            {board.map((cell, index) => (
-                <div 
-                    key={index} 
-                    className={`cell ${cell ? "active" : ""}`} 
-                    onClick={() => handleClick(index)}
-                >
-                    {cell}
-                </div>
-            ))}
+        <div className="game-container">
+            {/* Left Panel for stats, player info, etc. */}
+            <div className="left-panel">
+                <h3>Player Info</h3>
+                <h2>{winner ? `Winner: ${winner}!` : `Current Player: ${currentPlayer}`}</h2>
+            </div>
+            
+            {/* Middle Panel for the Game Board */}
+            <div className="board-container" style={{ 
+                display: "grid",
+                gridTemplateColumns: `repeat(${activeSize}, 1fr)`,
+                gridTemplateRows: `repeat(${activeSize}, 1fr)`,
+            }}>
+
+                {Array.from({ length: activeSize * activeSize }).map((_, index) => {
+                    const row = Math.floor(index / activeSize) + activeTopLeft.row;
+                    const col = (index % activeSize) + activeTopLeft.col;
+                    const fullIndex = row * fullSize + col; 
+
+                    return (
+                        <div className="cell-container">
+                            <div
+                                key={index} 
+                                className={`cell ${board[fullIndex] ? "active" : ""}`}
+                                onClick={() => {!winner && handleClick(index)
+                                    ;}}
+                            >
+                                {board[fullIndex]}
+                            </div>
+                        </div>
+                    );
+                })}
+                
+            </div>
+            {/* Right Panel for additional content */}
+            <div className="right-panel">
+                <h3>Game Info</h3>
+                <button onClick={resetGame} className="reset-btn">Restart</button>
+            </div>
         </div>
     );
 };
