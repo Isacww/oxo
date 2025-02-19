@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Board from "../board";
 import useAutoScroll from "../../hooks/AutoScrollHook";
+import { Box } from "@mui/material";
 
 function Play() {
     const scrollRef = useAutoScroll();
@@ -9,12 +10,11 @@ function Play() {
     }, []);
     
     return (
-        <div>
-            <h1>Play Tic-Tac-Toe</h1>
-            <div ref={scrollRef}>
+        <Box>
+            <Box ref={scrollRef}>
             <Board/>
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
 

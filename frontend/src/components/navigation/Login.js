@@ -1,5 +1,6 @@
+import { Button, TextField, Box } from "@mui/material";
 import React, { useState } from "react";
-import { useUser } from "../../context/UserContext"; 
+import { useUser } from "../../context/UserContext";
 
 const Login = () => {
     const { user, login, logout } = useUser();
@@ -12,24 +13,29 @@ const Login = () => {
     };
 
     return (
-        <div>
+        
+        <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap="1em" height="100vh" mt={-5}>
             {user ? (
                 <>
                     <h3>Welcome, {user.username}!</h3>
-                    <button onClick={logout}>Logout</button>
+                    <Button variant="contained" color="secondary" onClick={logout}>
+                        Logout
+                    </Button>
                 </>
             ) : (
                 <>
-                    <input
-                        type="text"
-                        placeholder="Enter username"
+                    <TextField
+                        label="Enter username"
+                        variant="outlined"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    <button onClick={handleLogin}>Login</button>
+                    <Button variant="contained" color="primary" onClick={handleLogin}>
+                        Login
+                    </Button>
                 </>
             )}
-        </div>
+        </Box>
     );
 };
 

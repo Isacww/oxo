@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import "../style.css";
 import useGameLogic from "../hooks/GameLogicHook";
 import { useUser } from "../context/UserContext";
+import { TextField } from "@mui/material";
+import CustomCard from "./CustomCard";
 
 const DEFAULT_RANK = 1000; // Default rank if none is set
 
 const Board = () => {
-    const { board, fullSize, currentPlayer, winner, activeSize, activeTopLeft, handleClick, resetGame, updateRank } = useGameLogic();
+    const { board, fullSize, currentPlayer, winner, activeSize, activeTopLeft, handleClick, resetGame } = useGameLogic();
     const { user } = useUser();
 
     // Player states
@@ -39,15 +41,18 @@ const Board = () => {
             {/* Left Panel for player names, ranks & game status */}
             <div className="left-panel">
                 <h3>Players</h3>
-                <p>X: {playerX} <strong>({playerXRank} pts)</strong></p>
-                <p>O: 
-                    <input 
-                        type="text" 
-                        value={playerO} 
-                        onChange={(e) => setPlayerO(e.target.value)} 
-                        placeholder="Enter O's name"
-                    /> <strong>({playerORank} pts)</strong>
-                </p>
+                <CustomCard 
+                    title={`${playerX}`} 
+                    description={`${playerXRank}`}
+                    image={`../../cross.png`}
+                    layout = "background"
+                />
+                <CustomCard 
+                    title={`Opponent`} 
+                    description={`${playerORank}`}
+                    image={`../../circle.png`} // Image stored in public/images
+                    layout = "background"
+                />
             </div>
             
             {/* Middle Panel - Game Board */}
@@ -77,12 +82,16 @@ const Board = () => {
             {/* Right Panel - Game Controls */}
             <div className="right-panel">
                 <h3>Game Info</h3>
-                <h2>
-                    {winner 
+                <CustomCard 
+                    title={winner 
                         ? `Winner: ${winner === "X" ? playerX : playerO}!` 
                         : `Current Turn: ${currentPlayer === "X" ? playerX : playerO}`
-                    }
-                </h2>
+                    } 
+                    description={winner ? "Congratulations!" : "Make your move!"}
+                    image={winner ? (currentPlayer === "X" ? "/cross.png" : "/circle.png") : null} 
+                    layout = "background"
+                />
+
                 <button onClick={resetGame} className="reset-btn">Restart</button>
             </div>
         </div>
